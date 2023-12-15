@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pair Generator</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      text-align: center;
+      margin: 20px;
+      background-color: #f2f2f2;
+    }
+    #container {
+      max-width: 800px;
+      margin: 200px auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      color: #333;
+    }
+    label {
+      display: block;
+      margin-bottom: 10px;
+    }
+    input {
+      width: calc(100% - 18px);
+      padding: 10px;
+      margin-bottom: 15px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      background-color: #4caf50;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:disabled {
+      background-color: #b0b0b0;
+      cursor: not-allowed;
+    }
+    #output {
+      margin-top: 20px;
+      text-align: left;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: left;
+    }
+    th {
+      background-color: #4caf50;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="container">
+
+    <h1>Pair Generator</h1>
+
+    <label for="peopleList">Enter names (comma-separated): </label>
+    <input type="text" id="peopleList" placeholder="e.g., John, Jane, Bob" oninput="checkInput()">
+
+    <button id="generateBtn" onclick="generatePairs()" disabled>Generate Pairs</button>
+
+    <div id="output"></div>
+
+  </div>
+
+  <script>
+    var generateBtn = document.getElementById("generateBtn");
+    var outputElement = document.getElementById("output");
+
+    function checkInput() {
+      var peopleListElement = document.getElementById("peopleList");
+      var pattern = /^[a-zA-Z\s,]+$/;
+
+      if (pattern.test(peopleListElement.value.trim())) {
+        generateBtn.disabled = false;
+      } else {
+        generateBtn.disabled = true;
+      }
+    }
+
+    function generatePairs() {
+      var peopleListElement = document.getElementById("peopleList");
+      var peopleList = peopleListElement.value.split(",").map(function (item) {
+        return item.trim();
+      });
+
+      // Check if there are at least two names
+      if (peopleList.length < 2) {
+        alert("Please enter at least two names to generate pairs.");
+        return;
+      }
+
+      // Shuffle the list
+      for (var i = peopleList.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = peopleList[i];
+        peopleList[i] = peopleList[j];
+        peopleList[j] = temp;
+      }
+
+      // Generate pairs
+      var pairs = [];
+      for (var k = 0; k < peopleList.length; k += 2) {
+        var pair = [];
+        pair.push(peopleList[k]);
+        if (peopleList[k + 1]) {
+          pair.push(peopleList[k + 1]);
+        }
+        pairs.push(pair);
+      }
+
+      // Display pairs in a table
+      var html = "<h2>Generated Pairs:</h2>";
+      html += "<table>";
+      html += "<tr><th>Pair 1</th><th>Pair 2</th></tr>";
+      pairs.forEach(function (pair) {
+        html += "<tr><td>" + pair[0] + "</td><td>" + (pair[1] || "") + "</td></tr>";
+      });
+      html += "</table>";
+
+      outputElement.innerHTML = html;
+
+      // Disable the button after generating pairs
+      generateBtn.disabled = true;
+    }
+  </script>
+
+</body>
+</html>
